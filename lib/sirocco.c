@@ -314,7 +314,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 				/*******************/
 				/* CLEAN VARIABLES */
 				/*******************/
-				//deleteList (&outputList);
+				deleteList (&outputList);
 				freeCombinatorialNumbers ();
 				free (f->coef);
 				free (If->coef);
@@ -382,7 +382,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 			/*******************/
 			/* CLEAN VARIABLES */
 			/*******************/
-			//deleteList (&outputList);
+			deleteList (&outputList);
 			freeCombinatorialNumbers ();
 			free (f->coef);
 			free (If->coef);
@@ -430,7 +430,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	/*******************/
 	/* CLEAN VARIABLES */
 	/*******************/
-	//deleteList (&outputList);
+	deleteList (&outputList);
 	freeCombinatorialNumbers ();
 	free (f->coef);
 	free (If->coef);
