@@ -310,7 +310,21 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 			IY1.imag.a -= eps;
 			IY1.imag.b += eps;
 			Ix1.real.b = stepsize;
-			if (stepsize < 1.0e-13) return NULL;
+			if (stepsize < 1.0e-13) {
+				/*******************/
+				/* CLEAN VARIABLES */
+				/*******************/
+				//deleteList (&outputList);
+				freeCombinatorialNumbers ();
+				free (f->coef);
+				free (If->coef);
+				free (Ig->coef);
+				free (Ih->coef);
+				free (f);
+				free (If);
+				free (Ig);
+				free (Ih);
+				return NULL;
 		}
 		
 #ifdef DEVELOPER
@@ -364,6 +378,19 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		if (!isContained (y0.real, IlastY0.real) || 
 					!isContained (y0.imag, IlastY0.imag)) {
 			printf ("error! Jumped to other thread!\n");
+			/*******************/
+			/* CLEAN VARIABLES */
+			/*******************/
+			//deleteList (&outputList);
+			freeCombinatorialNumbers ();
+			free (f->coef);
+			free (If->coef);
+			free (Ig->coef);
+			free (Ih->coef);
+			free (f);
+			free (If);
+			free (Ig);
+			free (Ih);
 			return NULL;
 		}
 		
