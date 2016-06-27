@@ -51,7 +51,7 @@ void ICFinv_hor(Icomplex_t *rop, double a, double b, double c) {
 	if (c > 0.0) {
 		double  r= 0.5 / c;
 		// case a<0<b
-		if (a*b < 0.0) {
+		if (a < 0.0 && b > 0.0) {
 			fesetround (FE_DOWNWARD);
 			rop->imag.a = -1.0 /c;
 			fesetround (FE_UPWARD);

@@ -238,6 +238,23 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 #ifdef PROFILING
 	nrejectedEps++; // used for profiling
 #endif
+			if (eps < 1.0e-13) {
+				printf ("Singularity detected. Abort Sirocco\n");
+				/*******************/
+				/* CLEAN VARIABLES */
+				/*******************/
+				deleteList (&outputList);
+				freeCombinatorialNumbers ();
+				free (f->coef);
+				free (If->coef);
+				free (Ig->coef);
+				free (Ih->coef);
+				free (f);
+				free (If);
+				free (Ig);
+				free (Ih);
+				return NULL;
+            }
 			eps *= 0.5;
 			IY0 = Iy0;
 			IY0.real.a -= eps;

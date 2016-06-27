@@ -43,6 +43,7 @@ void evalIPolX (Icomplex_t *rop, Ipolynomial_t polynomial, Icomplex_t x, Icomple
 void evalIPolY (Icomplex_t *rop, Ipolynomial_t polynomial, Icomplex_t x, Icomplex_t y);
 
 /* ROP = pY (Z1, Z2) -> EVALUATES THE DERIVATIVE OF THE POLYNOMIAL WITH RESPECT TO y EVALUATED IN (x,y). NO NEED OF COMPUTING */
+void evalIPolYHorner (Icomplex_t *rop, Ipolynomial_t polynomial, Icomplex_t x, Icomplex_t y);
 void evalIPolYHornerXY (Icomplex_t *rop, Ipolynomial_t polynomial, Icomplex_t x, Icomplex_t y);
 void evalIPolYHornerYX (Icomplex_t *rop, Ipolynomial_t polynomial, Icomplex_t x, Icomplex_t y);
 
