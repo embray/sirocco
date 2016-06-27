@@ -54,12 +54,12 @@ void getA (Icomplex_t *Ia, polynomial_t f, complex_t x0, complex_t y0) {
 // PERFORMS NEWTON TEST
 int newtonTest (Ipolynomial_t If, Icomplex_t Ix0, Icomplex_t Iy0, Icomplex_t IY0) {
 	Icomplex_t N, Iaux;
-	
-	
+
+
 	evalIPolHorner (&N, If, Ix0, Iy0);
-	evalIPolYHorner (&Iaux, If, Ix0, IY0); 
-	
-	// check we do not perform division by an interval containing 0. 
+	evalIPolYHorner (&Iaux, If, Ix0, IY0);
+
+	// check we do not perform division by an interval containing 0.
 	// in this case, return fail the test
 	if (isZeroContained(Iaux.real) && isZeroContained(Iaux.imag)) return 0;
 
@@ -68,11 +68,11 @@ int newtonTest (Ipolynomial_t If, Icomplex_t Ix0, Icomplex_t Iy0, Icomplex_t IY0
 
 	if (isSubsetEqual (N.real, IY0.real) && isSubsetEqual(N.imag, IY0.imag))
 		return 1;
-	else 
+	else
 		return 0;
 }
 
-// RETURNS WHETHER NEWTON EVALUATION N IS CONTAINED IN THE INTERVAL ENCLOSURE IY0 OF Iy0. 
+// RETURNS WHETHER NEWTON EVALUATION N IS CONTAINED IN THE INTERVAL ENCLOSURE IY0 OF Iy0.
 // BESIDES REPEATS WITH A ENCLOSURE THREE TIMES BIGER. RETURNS SUCCESS IF BOTH ARE SATISFIED
 int validatePoint (Ipolynomial_t If, Icomplex_t Ix0, Icomplex_t Iy0, Icomplex_t IY0) {
 	Icomplex_t IY1;
@@ -90,11 +90,11 @@ int validatePoint (Ipolynomial_t If, Icomplex_t Ix0, Icomplex_t Iy0, Icomplex_t 
 	IY1.imag.b = 2*IY0.imag.b - IY0.imag.a;
 	IY1.real.b = 2*IY0.real.b - IY0.real.a;
 	fesetround (oldRoundingMode);
-	
+
 	if (!newtonTest (If, Ix0, Iy0, IY1)) return 0;
 
 	return 1;
-	
+
 }
 
 #define validateStep	validatePoint
@@ -114,23 +114,23 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	list_t outputList = {0, NULL};				// initialize dynamic list for output
 	double dataToList[3] = {0.0, _y0R, _y0I};
 	appendData (&outputList, dataToList);
-	
-	
+
+
 	int i, j, k;								// counters
 	double stepsize = 0.0001;					// step size
 	double eps;									// radius of the box
-	
+
 	polynomial_t f;								// complex polynomials (with fp arithmetic)
 												// to be used in Newton method correction
-	
+
 	Ipolynomial_t If, Ig, Ih;					// complex polynomials (with Interval arithmetic)
 												// to be used in validated homotopy
-	
-	
+
+
 	complex_t a;								// y' (x0) tangent vector to the zero-curve
 	Icomplex_t Ia;								// y'(x0) as Icomplex_t
-	
-	
+
+
 	complex_t x0;								// x0 of the root (x0.imag = 0)
 	complex_t y0;								// approximated y0 of the root
 	Icomplex_t Ix0;								// Interval representation for x0
@@ -138,18 +138,18 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	Icomplex_t IY0;								// Interval enclosure for y0 for Newton Method
 	Icomplex_t Iy1, IY1;						// Interval representation of zeros for rotated polynomial
 	Icomplex_t Ix1;
-	
-	
+
+
 	complex_t aux, aux1, aux2, auxy0;			// auxiliar variable for complex_t computation
 	Icomplex_t Iaux;							// auxiliar varialbe for Icomplex_t computations
-	
+
 	Icomplex_t IlastY0;							// to prove that the boxes are connected
 		IlastY0.real.a = -INFINITY;				// REMOVE???
 		IlastY0.real.b = INFINITY;
 		IlastY0.imag.a = -INFINITY;
 		IlastY0.imag.b = INFINITY;
-	
-	
+
+
 	int nCoef = ((degree+1)*(degree+2)) / 2;	// number of monomials
 	complex_t coef[nCoef];						// coefficient list for floating point representation of
 												// the polynomial.
@@ -161,7 +161,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	/***********************/
 	/* DATA INITIALIZATION */
 	/***********************/
-	
+
 	// INITIALIZE COEFICIENT DATA FROM ARGUMENT INTO APPROPIATE DATA STRUCTURES
 	for (i=0; i<nCoef; i++)
 		for (j=0; j<4; j++) {
@@ -172,21 +172,21 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 			coef[i].real = (_coef[4*i] + _coef[4*i+1]) / 2.0;
 			coef[i].imag = (_coef[4*i+2] + _coef[4*i+3]) / 2.0;
 		}
-	
+
 
 	// INITIALIZE FLOATING POINT COMPLEX APPROXIMATION OF THE ROOT
 	x0.real = 0.0; x0.imag = 0.0;
-	y0.real = _y0R; y0.imag = _y0I;	
-		
-	
+	y0.real = _y0R; y0.imag = _y0I;
+
+
 	// INITIALIZE AND ALLOCATE SPACE FOR POLYNOMIALS
 	f = newPolynomial (coef, degree);
 	If = newIPolynomial (Icoef, degree);
 	Ig = newZeroIPolynomial (degree);
-	Ih = newZeroIPolynomial (degree);	
+	Ih = newZeroIPolynomial (degree);
 
 
-#ifdef PROFILING	
+#ifdef PROFILING
 	int nsteps = 0;								// number of steps performed
 	int nrejectedEps = 0;						// number of rejected validations of boxes
 	int nrejectedSteps = 0;						// number of rejected validations of tubes
@@ -199,7 +199,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	/*******************/
 	//correctRoot (f, &x0, &y0);
 
-	
+
 	/*******************/
 	/** MAIN LOOP	   */
 	/*******************/
@@ -234,7 +234,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		IY0.imag.a -= eps;
 		IY0.imag.b += eps;
 		while (validatePoint (If, Ix0, Iy0, IY0) == 0) {
-		
+
 #ifdef PROFILING
 	nrejectedEps++; // used for profiling
 #endif
@@ -245,8 +245,8 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 			IY0.imag.a -= eps;
 			IY0.imag.b += eps;
 		}
-		
-		
+
+
 		// COMPUTE a = -fx(x0,y0) / fy(x0.y0)
 		// both fp and Interval
 		getA (&Ia, f, x0, y0);
@@ -259,7 +259,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		// store all in aux2
 		Cmul (&aux2, aux2, a);
 		Cmul (&aux2, aux2, a);
-		
+
 		evalPolXY (&aux, f, x0, y0);
 		Cmul (&aux, aux, a);
 		aux.real *= 2.0; aux.imag *= 2.0;
@@ -267,18 +267,18 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 
 		evalPolXX (&aux, f, x0, y0);
 		Cadd (&aux2, aux2, aux);
-		
+
 		Cdiv (&aux, aux2, aux1);
 		stepsize = sqrt (aux.real*aux.real + aux.imag*aux.imag);
 		// DETECT INFLEXION POINT
 		if (stepsize < 1.0e-10)
 			stepsize=1.0;
-		else 
+		else
 			stepsize = sqrt(eps / stepsize);
 		if (stepsize + x0.real > 1.0) stepsize = 1.000001 - x0.real;
-		
-		
-		/*******************/	
+
+
+		/*******************/
 		/** VALIDATE STEP  */
 		/*******************/
 		Iy1 = Iy0;
@@ -291,12 +291,12 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		// PERFORM TRANSLATION AND ROTATION OF THE POLYNOMIAL
 		IlinearVarChange2 (Ig, If, Ix0);
 		IlinearVarChange (Ih, Ig, Ia);
-		
+
 		Ix0.real.b = Ix0.real.a + stepsize;
 
 		Ix1.imag.a = Ix1.imag.b = 0.0;
 		Ix1.real.a = 0.0;
-		Ix1.real.b = stepsize;	  
+		Ix1.real.b = stepsize;
 
 		while (validateStep (Ih, Ix1, Iy1, IY1) == 0) {
 #ifdef PROFILING
@@ -325,28 +325,29 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 				free (Ig);
 				free (Ih);
 				return NULL;
+            }
 		}
-		
+
 #ifdef DEVELOPER
 	printf ("x0 = %e\tstep = %e\n", x0.real, stepsize);
 #endif
 
 
 
-		/**************************/	
+		/**************************/
 		/** VALIDATE FINAL STEP   */
 		/**************************/
 		if (x0.real + stepsize > 1.0) {
 			stepsize = 1.0 - x0.real;
 			Ix1.real.b = stepsize;
-			
+
 #ifdef DEVELOPER
 	printf ("step final = %e\n", stepsize);
 #endif
 
-			while (validateStep (Ih, Ix1, Iy1, IY1) == 0);  
-		}		
-			
+			while (validateStep (Ih, Ix1, Iy1, IY1) == 0);
+		}
+
 
 		/********************/
 		/* UPDATE VARIABLES */
@@ -354,8 +355,8 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		x0.real = Ix0.real.a + stepsize;
 		y0.real = y0.real + Ia.real.a * stepsize;
 		y0.imag = y0.imag + Ia.imag.a * stepsize;
-		
-		
+
+
 		// STORE LAST VALIDATED BOX TO CHECK WE HAVE NOT JUMPED TO ANOTHER THREAD
 		IlastY0 = Iy0;
 		IlastY0.real.a += Ia.real.a * stepsize;
@@ -365,7 +366,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		IlastY0.real.a -= eps; IlastY0.real.b += eps;
 		IlastY0.imag.a -= eps; IlastY0.imag.b += eps;
 
-		
+
 
 		/*******************/
 		/* CORRECT ROOT	   */
@@ -375,7 +376,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 		/**********************************************/
 		/* CHECK WE HAVE NOT JUMPED TO ANOTHER ROOT   */
 		/**********************************************/
-		if (!isContained (y0.real, IlastY0.real) || 
+		if (!isContained (y0.real, IlastY0.real) ||
 					!isContained (y0.imag, IlastY0.imag)) {
 			printf ("error! Jumped to other thread!\n");
 			/*******************/
@@ -393,16 +394,16 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 			free (Ih);
 			return NULL;
 		}
-		
+
 		/*********************************/
 		/* APPEND VALIDATED DATA TO LIST */
 		/*********************************/
 		dataToList[0] = x0.real; dataToList[1] = y0.real; dataToList[2] = y0.imag;
 		appendData (&outputList, dataToList);
-		
+
 		if (x0.real + stepsize > 1.0) stepsize = 0.0;
-		
-		
+
+
 	}
 #ifdef PROFILING
 	printf ("x0 = %e, y0 = %.15le%+.15le i\n", x0.real, y0.real, y0.imag);
@@ -410,12 +411,12 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 	printf ("\t Number of rejected Eps= %i\n", nrejectedEps);
 	printf ("\t Number of rejected steps = %i\n", nrejectedSteps);
 #endif
-	
-	
+
+
 	/***********************************************/
 	/* PREPARE OUTPUT AS A BINARY ARRAY OF DOUBLES */
 	/***********************************************/
-	
+
 	double *rop = malloc ((3 * outputList.len + 1) * sizeof (double));
 	rop[0] = outputList.len;
 	node_t *index = outputList.first;
@@ -442,7 +443,7 @@ double* homotopyPath (int degree, 				// degree of the input polynomial
 
 	/*****************************************************************/
 	/* OUTPUT VALIDATED PIECEWISE LINEAR APPROXIMATION OF THE THREAD */
-	/*****************************************************************/	
+	/*****************************************************************/
 	return rop;
 }
 
